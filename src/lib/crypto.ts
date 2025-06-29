@@ -1,0 +1,103 @@
+"use client";
+
+// Helper function to convert ArrayBuffer to Base64
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
+// Helper function to convert Base64 to ArrayBuffer
+function base64ToArrayBuffer(base64: string): ArrayBuffer {
+  const binary_string = window.atob(base64);
+  const len = binary_string.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+// Function to derive a key from a passphrase and salt
+async function getKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await window.crypto.subtle.importKey(
+    'raw',
+    enc.encode(passphrase),
+    { name: 'PBKDF2' },
+    false,
+    ['deriveKey']
+  );
+  return window.crypto.subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      salt: salt,
+      iterations: 100000,
+      hash: 'SHA-256',
+    },
+    keyMaterial,
+    { name: 'AES-GCM', length: 256 },
+    true,
+    ['encrypt', 'decrypt']
+  );
+}
+
+// Encrypt function
+export async function encryptText(text: string, passphrase: string): Promise<string | null> {
+  try {
+    const enc = new TextEncoder();
+    const salt = window.crypto.getRandomValues(new Uint8Array(16));
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const key = await getKey(passphrase, salt);
+
+    const encryptedContent = await window.crypto.subtle.encrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+      },
+      key,
+      enc.encode(text)
+    );
+
+    const encryptedBytes = new Uint8Array(encryptedContent);
+    const resultBuffer = new Uint8Array(salt.length + iv.length + encryptedBytes.length);
+    resultBuffer.set(salt, 0);
+    resultBuffer.set(iv, salt.length);
+    resultBuffer.set(encryptedBytes, salt.length + iv.length);
+
+    return arrayBufferToBase64(resultBuffer.buffer);
+  } catch (error) {
+    console.error('Encryption failed:', error);
+    return null;
+  }
+}
+
+// Decrypt function
+export async function decryptText(encryptedData: string, passphrase: string): Promise<string | null> {
+  try {
+    const encryptedDataBuffer = base64ToArrayBuffer(encryptedData);
+    const salt = new Uint8Array(encryptedDataBuffer.slice(0, 16));
+    const iv = new Uint8Array(encryptedDataBuffer.slice(16, 28));
+    const data = new Uint8Array(encryptedDataBuffer.slice(28));
+    const key = await getKey(passphrase, salt);
+
+    const decryptedContent = await window.crypto.subtle.decrypt(
+      {
+        name: 'AES-GCM',
+        iv: iv,
+      },
+      key,
+      data.buffer
+    );
+
+    const dec = new TextDecoder();
+    return dec.decode(decryptedContent);
+  } catch (error) {
+    console.error('Decryption failed:', error);
+    return null;
+  }
+}
