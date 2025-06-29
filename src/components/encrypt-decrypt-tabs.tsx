@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { encryptText, decryptText } from "@/lib/crypto";
 import { Copy, Check, Lock, Unlock, Loader2, XCircle } from "lucide-react";
 
-export function EncryptDecryptTabs() {
+export function EncryptDecryptTabs({ userId }: { userId: string }) {
   const [encryptInput, setEncryptInput] = useState("");
   const [encryptPassphrase, setEncryptPassphrase] = useState("");
   const [encryptRecipientId, setEncryptRecipientId] = useState("");
@@ -21,12 +21,28 @@ export function EncryptDecryptTabs() {
 
   const [decryptInput, setDecryptInput] = useState("");
   const [decryptPassphrase, setDecryptPassphrase] = useState("");
-  const [decryptRecipientId, setDecryptRecipientId] = useState("");
+  const [decryptRecipientId, setDecryptRecipientId] = useState(userId || "");
   const [decryptOutput, setDecryptOutput] = useState("");
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [hasCopiedDecrypt, setHasCopiedDecrypt] = useState(false);
+  
+  const [hasCopiedId, setHasCopiedId] = useState(false);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (userId) {
+      setDecryptRecipientId(userId);
+    }
+  }, [userId]);
+
+  const copyUserId = () => {
+    if (!userId) return;
+    navigator.clipboard.writeText(userId);
+    setHasCopiedId(true);
+    toast({ title: "Recipient ID copied to clipboard!" });
+    setTimeout(() => setHasCopiedId(false), 2000);
+  };
 
   const handleEncrypt = async () => {
     if (!encryptInput || !encryptPassphrase) {
@@ -89,7 +105,7 @@ export function EncryptDecryptTabs() {
   const handleDecryptClear = () => {
     setDecryptInput("");
     setDecryptPassphrase("");
-    setDecryptRecipientId("");
+    setDecryptRecipientId(userId || "");
     setDecryptOutput("");
   };
 
@@ -110,11 +126,26 @@ export function EncryptDecryptTabs() {
 
   return (
     <Card className="w-full bg-card rounded-lg">
-      <CardHeader>
-        <CardTitle>Message Transformer</CardTitle>
-        <CardDescription>
-          Switch between encrypting and decrypting your text.
-        </CardDescription>
+      <CardHeader className="relative p-6">
+        <div>
+            <CardTitle>Message Transformer</CardTitle>
+            <CardDescription>
+            Switch between encrypting and decrypting your text.
+            </CardDescription>
+        </div>
+        {userId && (
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 hidden sm:block">
+            <div className="p-3 rounded-md border border-dashed border-primary/50 bg-muted/30">
+              <Label htmlFor="user-id" className="text-xs text-muted-foreground">Your Recipient ID</Label>
+              <div className="flex items-center gap-2 mt-1">
+                  <Input id="user-id" value={userId} readOnly className="h-8 font-code bg-transparent text-sm w-44" />
+                  <Button variant="ghost" size="icon" onClick={copyUserId} aria-label="Copy User ID" className="h-8 w-8">
+                      {hasCopiedId ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="encrypt" className="w-full">
@@ -160,7 +191,11 @@ export function EncryptDecryptTabs() {
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button onClick={handleEncrypt} className="w-full hover:shadow-[0_0_20px_hsl(var(--primary))] transition-shadow" disabled={isEncrypting}>
+              <Button 
+                onClick={handleEncrypt} 
+                className={`w-full hover:shadow-[0_0_20px_hsl(var(--primary))] transition-shadow ${isEncrypting ? 'animate-pulsing-glow' : ''}`}
+                disabled={isEncrypting}
+              >
                 {isEncrypting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
                 Encrypt Message
               </Button>
@@ -218,7 +253,7 @@ export function EncryptDecryptTabs() {
               <Label htmlFor="decrypt-recipient-id">Your ID (if one was used)</Label>
               <Input
                 id="decrypt-recipient-id"
-                placeholder="Enter your recipient ID to verify"
+                placeholder="Your Recipient ID is pre-filled"
                 value={decryptRecipientId}
                 onChange={(e) => setDecryptRecipientId(e.target.value)}
               />
