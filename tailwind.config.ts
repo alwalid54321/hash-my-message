@@ -117,7 +117,7 @@ export default {
         'fade-in-up': 'fade-in-up 0.5s ease-out',
         'neon-glow': 'neon-glow 2.5s ease-in-out infinite',
         'border-glow': 'border-glow 3s ease-in-out infinite',
-        'border-pan': 'border-pan 4s ease-in-out infinite',
+        'border-pan': 'border-pan 6s linear infinite',
       },
     },
   },
