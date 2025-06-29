@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,11 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { encryptText, decryptText } from "@/lib/crypto";
-import { Copy, Check, Lock, Unlock, Loader2, XCircle } from "lucide-react";
+import { Copy, Check, Lock, Unlock, Loader2, XCircle, Eye, EyeOff } from "lucide-react";
 
 export function EncryptDecryptTabs({ userId }: { userId: string }) {
   const [encryptInput, setEncryptInput] = useState("");
   const [encryptPassphrase, setEncryptPassphrase] = useState("");
+  const [showEncryptPassphrase, setShowEncryptPassphrase] = useState(false);
   const [encryptRecipientId, setEncryptRecipientId] = useState("");
   const [encryptOutput, setEncryptOutput] = useState("");
   const [isEncrypting, setIsEncrypting] = useState(false);
@@ -21,6 +23,7 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
 
   const [decryptInput, setDecryptInput] = useState("");
   const [decryptPassphrase, setDecryptPassphrase] = useState("");
+  const [showDecryptPassphrase, setShowDecryptPassphrase] = useState(false);
   const [decryptRecipientId, setDecryptRecipientId] = useState(userId || "");
   const [decryptOutput, setDecryptOutput] = useState("");
   const [isDecrypting, setIsDecrypting] = useState(false);
@@ -114,6 +117,7 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
     setEncryptPassphrase("");
     setEncryptRecipientId("");
     setEncryptOutput("");
+    setShowEncryptPassphrase(false);
   };
 
   const handleDecryptClear = () => {
@@ -121,6 +125,7 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
     setDecryptPassphrase("");
     setDecryptRecipientId(userId || "");
     setDecryptOutput("");
+    setShowDecryptPassphrase(false);
   };
 
   const copyToClipboard = (text: string, type: "encrypt" | "decrypt") => {
@@ -189,13 +194,26 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="encrypt-passphrase">Passphrase</Label>
-              <Input
-                id="encrypt-passphrase"
-                type="password"
-                placeholder="Enter a strong passphrase"
-                value={encryptPassphrase}
-                onChange={(e) => setEncryptPassphrase(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="encrypt-passphrase"
+                  type={showEncryptPassphrase ? "text" : "password"}
+                  placeholder="Enter a strong passphrase"
+                  value={encryptPassphrase}
+                  onChange={(e) => setEncryptPassphrase(e.target.value)}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute inset-y-0 right-0"
+                  onClick={() => setShowEncryptPassphrase((prev) => !prev)}
+                  aria-label={showEncryptPassphrase ? "Hide passphrase" : "Show passphrase"}
+                >
+                  {showEncryptPassphrase ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="encrypt-recipient-id">Recipient ID (Optional)</Label>
@@ -257,13 +275,26 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="decrypt-passphrase">Passphrase</Label>
-              <Input
-                id="decrypt-passphrase"
-                type="password"
-                placeholder="Enter the passphrase used for encryption"
-                value={decryptPassphrase}
-                onChange={(e) => setDecryptPassphrase(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="decrypt-passphrase"
+                  type={showDecryptPassphrase ? "text" : "password"}
+                  placeholder="Enter the passphrase used for encryption"
+                  value={decryptPassphrase}
+                  onChange={(e) => setDecryptPassphrase(e.target.value)}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute inset-y-0 right-0"
+                  onClick={() => setShowDecryptPassphrase((prev) => !prev)}
+                  aria-label={showDecryptPassphrase ? "Hide passphrase" : "Show passphrase"}
+                >
+                  {showDecryptPassphrase ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="decrypt-recipient-id">Your ID (if one was used)</Label>
