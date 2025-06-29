@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { encryptText, decryptText } from "@/lib/crypto";
-import { Copy, Check, Lock, Unlock, Loader2 } from "lucide-react";
+import { Copy, Check, Lock, Unlock, Loader2, XCircle } from "lucide-react";
 
 export function EncryptDecryptTabs() {
   const [encryptInput, setEncryptInput] = useState("");
@@ -77,6 +77,18 @@ export function EncryptDecryptTabs() {
     }
   };
 
+  const handleEncryptClear = () => {
+    setEncryptInput("");
+    setEncryptPassphrase("");
+    setEncryptOutput("");
+  };
+
+  const handleDecryptClear = () => {
+    setDecryptInput("");
+    setDecryptPassphrase("");
+    setDecryptOutput("");
+  };
+
   const copyToClipboard = (text: string, type: "encrypt" | "decrypt") => {
     navigator.clipboard.writeText(text).then(() => {
       if (type === "encrypt") {
@@ -89,9 +101,11 @@ export function EncryptDecryptTabs() {
       toast({ title: "Copied to clipboard!" });
     });
   };
+  
+  const MAX_CHARS = 5000;
 
   return (
-    <Card className="w-full shadow-2xl">
+    <Card className="w-full shadow-2xl bg-card/80 backdrop-blur-sm animate-border-glow">
       <CardHeader>
         <CardTitle>Message Transformer</CardTitle>
         <CardDescription>
@@ -109,7 +123,7 @@ export function EncryptDecryptTabs() {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="encrypt" className="mt-6 space-y-6">
+          <TabsContent value="encrypt" className="mt-6 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="encrypt-input">Text to Encrypt</Label>
               <Textarea
@@ -118,7 +132,9 @@ export function EncryptDecryptTabs() {
                 value={encryptInput}
                 onChange={(e) => setEncryptInput(e.target.value)}
                 rows={5}
+                maxLength={MAX_CHARS}
               />
+              <p className="text-xs text-muted-foreground text-right">{encryptInput.length} / {MAX_CHARS}</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="encrypt-passphrase">Passphrase</Label>
@@ -130,10 +146,15 @@ export function EncryptDecryptTabs() {
                 onChange={(e) => setEncryptPassphrase(e.target.value)}
               />
             </div>
-            <Button onClick={handleEncrypt} className="w-full" disabled={isEncrypting}>
-              {isEncrypting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
-              Encrypt Message
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button onClick={handleEncrypt} className="w-full hover:shadow-[0_0_20px_hsl(var(--primary))] transition-shadow" disabled={isEncrypting}>
+                {isEncrypting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Lock className="mr-2 h-4 w-4" />}
+                Encrypt Message
+              </Button>
+               <Button onClick={handleEncryptClear} variant="secondary" className="w-full sm:w-auto">
+                <XCircle className="mr-2 h-4 w-4" /> Clear
+              </Button>
+            </div>
             {encryptOutput && (
               <div className="space-y-2 animate-fade-in">
                 <Label htmlFor="encrypt-output">Encrypted Output</Label>
@@ -143,7 +164,7 @@ export function EncryptDecryptTabs() {
                     readOnly
                     value={encryptOutput}
                     rows={5}
-                    className="pr-12 bg-muted/50"
+                    className="pr-12 bg-muted/50 font-code text-sm"
                   />
                   <Button
                     variant="ghost"
@@ -152,14 +173,14 @@ export function EncryptDecryptTabs() {
                     onClick={() => copyToClipboard(encryptOutput, "encrypt")}
                     aria-label="Copy encrypted text"
                   >
-                    {hasCopiedEncrypt ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
+                    {hasCopiedEncrypt ? <Check className="h-5 w-5 text-primary" /> : <Copy className="h-5 w-5" />}
                   </Button>
                 </div>
               </div>
             )}
           </TabsContent>
           
-          <TabsContent value="decrypt" className="mt-6 space-y-6">
+          <TabsContent value="decrypt" className="mt-6 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="decrypt-input">Encrypted Data</Label>
               <Textarea
@@ -180,10 +201,15 @@ export function EncryptDecryptTabs() {
                 onChange={(e) => setDecryptPassphrase(e.target.value)}
               />
             </div>
-            <Button onClick={handleDecrypt} className="w-full" disabled={isDecrypting}>
-              {isDecrypting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Unlock className="mr-2 h-4 w-4" />}
-              Decrypt Message
-            </Button>
+             <div className="flex flex-col sm:flex-row gap-4">
+                <Button onClick={handleDecrypt} className="w-full hover:shadow-[0_0_20px_hsl(var(--primary))] transition-shadow" disabled={isDecrypting}>
+                  {isDecrypting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Unlock className="mr-2 h-4 w-4" />}
+                  Decrypt Message
+                </Button>
+                <Button onClick={handleDecryptClear} variant="secondary" className="w-full sm:w-auto">
+                  <XCircle className="mr-2 h-4 w-4" /> Clear
+                </Button>
+            </div>
             {decryptOutput && (
               <div className="space-y-2 animate-fade-in">
                 <Label htmlFor="decrypt-output">Decrypted Text</Label>
@@ -202,7 +228,7 @@ export function EncryptDecryptTabs() {
                     onClick={() => copyToClipboard(decryptOutput, "decrypt")}
                     aria-label="Copy decrypted text"
                   >
-                    {hasCopiedDecrypt ? <Check className="h-5 w-5 text-green-400" /> : <Copy className="h-5 w-5" />}
+                    {hasCopiedDecrypt ? <Check className="h-5 w-5 text-primary" /> : <Copy className="h-5 w-5" />}
                   </Button>
                 </div>
               </div>

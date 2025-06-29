@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Roboto', 'sans-serif'],
-        headline: ['Roboto', 'sans-serif'],
+        body: ['"Share Tech Mono"', 'monospace'],
+        headline: ['"Major Mono Display"', 'monospace'],
         code: ['monospace'],
       },
       colors: {
@@ -95,6 +95,14 @@ export default {
         'fade-in-up': {
           'from': { opacity: '0', transform: 'translateY(20px)' },
           'to': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'neon-glow': {
+          '0%, 100%': { 'text-shadow': '0 0 2px hsl(var(--primary)), 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary))' },
+          '50%': { 'text-shadow': '0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)), 0 0 20px hsl(var(--primary))' },
+        },
+        'border-glow': {
+          '0%, 100%': { 'box-shadow': '0 0 10px hsl(var(--primary) / 0.5)' },
+          '50%': { 'box-shadow': '0 0 20px hsl(var(--primary) / 0.5)' },
         }
       },
       animation: {
@@ -102,6 +110,8 @@ export default {
         'accordion-up': 'accordion-up 0.2s ease-out',
         'fade-in': 'fade-in 0.5s ease-out',
         'fade-in-up': 'fade-in-up 0.5s ease-out',
+        'neon-glow': 'neon-glow 2.5s ease-in-out infinite',
+        'border-glow': 'border-glow 3s ease-in-out infinite',
       },
     },
   },

@@ -110,7 +110,7 @@ export function PassphraseHintDialog() {
           )}
         </div>
         <DialogFooter>
-          <Button onClick={handleGenerate} disabled={isLoading}>
+          <Button onClick={handleGenerate} disabled={isLoading} className="hover:shadow-[0_0_20px_hsl(var(--primary))] transition-shadow">
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
