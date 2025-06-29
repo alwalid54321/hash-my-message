@@ -126,26 +126,28 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
 
   return (
     <Card className="w-full bg-card rounded-lg">
-      <CardHeader className="relative p-6">
-        <div>
+      <CardHeader className="p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
             <CardTitle>Message Transformer</CardTitle>
             <CardDescription>
             Switch between encrypting and decrypting your text.
             </CardDescription>
-        </div>
-        {userId && (
-          <div className="absolute top-4 right-4 sm:top-6 sm:right-6 hidden sm:block">
-            <div className="p-3 rounded-md border border-dashed border-primary/50 bg-muted/30">
-              <Label htmlFor="user-id" className="text-xs text-muted-foreground">Your Recipient ID</Label>
-              <div className="flex items-center gap-2 mt-1">
-                  <Input id="user-id" value={userId} readOnly className="h-8 font-code bg-transparent text-sm w-44" />
-                  <Button variant="ghost" size="icon" onClick={copyUserId} aria-label="Copy User ID" className="h-8 w-8">
-                      {hasCopiedId ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
-                  </Button>
+          </div>
+          {userId && (
+            <div className="shrink-0">
+              <div className="p-3 rounded-md border border-dashed border-primary/50 bg-muted/30">
+                <Label htmlFor="user-id" className="text-xs text-muted-foreground">Your Recipient ID</Label>
+                <div className="flex items-center gap-2 mt-1">
+                    <Input id="user-id" value={userId} readOnly className="h-8 font-code bg-transparent text-sm w-44" />
+                    <Button variant="ghost" size="icon" onClick={copyUserId} aria-label="Copy User ID" className="h-8 w-8">
+                        {hasCopiedId ? <Check className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="encrypt" className="w-full">
