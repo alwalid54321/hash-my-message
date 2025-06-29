@@ -79,7 +79,7 @@ export async function encryptText(text: string, passphrase: string, recipientId?
 }
 
 // Decrypt function
-export async function decryptText(encryptedData: string, passphrase: string, recipientId?: string): Promise<string | null> {
+export async function decryptText(encryptedData: string, passphrase: string, recipientId?: string): Promise<string> {
   try {
     const encryptedDataBuffer = base64ToArrayBuffer(encryptedData);
     const salt = new Uint8Array(encryptedDataBuffer.slice(0, 16));
@@ -104,14 +104,23 @@ export async function decryptText(encryptedData: string, passphrase: string, rec
       if (decryptedPayload.startsWith(prefix)) {
         return decryptedPayload.substring(prefix.length);
       } else {
-        // ID mismatch, fail decryption
-        return null;
+        // ID was provided, but the payload doesn't have the correct prefix.
+        throw new Error("ID_MISMATCH");
       }
+    }
+
+    // No ID provided for decryption. Check if message was likely encrypted with one.
+    if (/^user-[a-zA-Z0-9-]+\:\:/.test(decryptedPayload)) {
+      throw new Error("ID_MISSING");
     }
 
     return decryptedPayload;
   } catch (error) {
+    if (error instanceof Error && (error.message === "ID_MISMATCH" || error.message === "ID_MISSING")) {
+      throw error; // Re-throw our specific errors.
+    }
+    // Any other error from crypto.subtle.decrypt is a general failure.
     console.error('Decryption failed:', error);
-    return null;
+    throw new Error("PASSPHRASE_OR_DATA_INVALID");
   }
 }

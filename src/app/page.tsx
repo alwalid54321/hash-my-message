@@ -28,7 +28,7 @@ export default function Home() {
       </div>
 
       <div 
-        className="w-full max-w-2xl animate-fade-in-up p-[2px] rounded-xl bg-gradient-to-r from-primary/30 via-primary/80 to-primary/30 [background-size:400%_auto] animate-border-pan" 
+        className="w-full max-w-2xl animate-fade-in-up rounded-xl bg-gradient-to-r from-primary/50 via-primary to-primary/50 [background-size:400%_auto] animate-border-pan animate-shadow-pulse p-[2px]" 
         style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}
       >
         <EncryptDecryptTabs userId={userId} />

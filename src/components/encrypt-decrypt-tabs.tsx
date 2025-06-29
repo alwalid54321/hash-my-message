@@ -80,18 +80,32 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
     }
     setIsDecrypting(true);
     setDecryptOutput('');
-    const result = await decryptText(decryptInput, decryptPassphrase, decryptRecipientId);
-    setIsDecrypting(false);
-    if (result !== null) {
+    try {
+      const result = await decryptText(decryptInput, decryptPassphrase, decryptRecipientId);
       setDecryptOutput(result);
-    } else {
+    } catch (error) {
       setDecryptOutput("");
+      let description = "An unknown error occurred.";
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'PASSPHRASE_OR_DATA_INVALID':
+            description = "Please check your passphrase and the encrypted data. They may be incorrect or corrupted.";
+            break;
+          case 'ID_MISMATCH':
+            description = "The Recipient ID is incorrect or does not match the one used for encryption.";
+            break;
+          case 'ID_MISSING':
+             description = "This message was encrypted for a specific Recipient ID, which is missing from the input.";
+            break;
+        }
+      }
       toast({
         title: "Decryption Failed",
-        description:
-          "This might be due to an incorrect passphrase, corrupted data, or a wrong Recipient ID.",
+        description: description,
         variant: "destructive",
       });
+    } finally {
+      setIsDecrypting(false);
     }
   };
 
