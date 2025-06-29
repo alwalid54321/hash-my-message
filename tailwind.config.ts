@@ -103,6 +103,11 @@ export default {
         'border-glow': {
           '0%, 100%': { 'box-shadow': '0 0 10px hsl(var(--primary) / 0.5)' },
           '50%': { 'box-shadow': '0 0 20px hsl(var(--primary) / 0.5)' },
+        },
+        'border-pan': {
+          '0%': { 'background-position': '0% 50%' },
+          '50%': { 'background-position': '100% 50%' },
+          '100%': { 'background-position': '0% 50%' },
         }
       },
       animation: {
@@ -112,6 +117,7 @@ export default {
         'fade-in-up': 'fade-in-up 0.5s ease-out',
         'neon-glow': 'neon-glow 2.5s ease-in-out infinite',
         'border-glow': 'border-glow 3s ease-in-out infinite',
+        'border-pan': 'border-pan 4s ease-in-out infinite',
       },
     },
   },

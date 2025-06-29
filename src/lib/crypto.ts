@@ -47,12 +47,14 @@ async function getKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> 
 }
 
 // Encrypt function
-export async function encryptText(text: string, passphrase: string): Promise<string | null> {
+export async function encryptText(text: string, passphrase: string, recipientId?: string): Promise<string | null> {
   try {
     const enc = new TextEncoder();
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const key = await getKey(passphrase, salt);
+
+    const payload = recipientId ? `${recipientId}::${text}` : text;
 
     const encryptedContent = await window.crypto.subtle.encrypt(
       {
@@ -60,7 +62,7 @@ export async function encryptText(text: string, passphrase: string): Promise<str
         iv: iv,
       },
       key,
-      enc.encode(text)
+      enc.encode(payload)
     );
 
     const encryptedBytes = new Uint8Array(encryptedContent);
@@ -77,7 +79,7 @@ export async function encryptText(text: string, passphrase: string): Promise<str
 }
 
 // Decrypt function
-export async function decryptText(encryptedData: string, passphrase: string): Promise<string | null> {
+export async function decryptText(encryptedData: string, passphrase: string, recipientId?: string): Promise<string | null> {
   try {
     const encryptedDataBuffer = base64ToArrayBuffer(encryptedData);
     const salt = new Uint8Array(encryptedDataBuffer.slice(0, 16));
@@ -95,7 +97,19 @@ export async function decryptText(encryptedData: string, passphrase: string): Pr
     );
 
     const dec = new TextDecoder();
-    return dec.decode(decryptedContent);
+    const decryptedPayload = dec.decode(decryptedContent);
+
+    if (recipientId) {
+      const prefix = `${recipientId}::`;
+      if (decryptedPayload.startsWith(prefix)) {
+        return decryptedPayload.substring(prefix.length);
+      } else {
+        // ID mismatch, fail decryption
+        return null;
+      }
+    }
+
+    return decryptedPayload;
   } catch (error) {
     console.error('Decryption failed:', error);
     return null;

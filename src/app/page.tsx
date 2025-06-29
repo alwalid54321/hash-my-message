@@ -15,7 +15,10 @@ export default function Home() {
           <PassphraseHintDialog />
         </div>
       </div>
-      <div className="w-full max-w-2xl animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}>
+      <div 
+        className="w-full max-w-2xl animate-fade-in-up p-[2px] rounded-xl bg-gradient-to-r from-primary/30 via-primary/80 to-primary/30 [background-size:200%_auto] animate-border-pan" 
+        style={{ animationDelay: '0.3s', animationFillMode: 'backwards' }}
+      >
         <EncryptDecryptTabs />
       </div>
     </main>

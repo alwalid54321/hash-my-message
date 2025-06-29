@@ -14,12 +14,14 @@ import { Copy, Check, Lock, Unlock, Loader2, XCircle } from "lucide-react";
 export function EncryptDecryptTabs() {
   const [encryptInput, setEncryptInput] = useState("");
   const [encryptPassphrase, setEncryptPassphrase] = useState("");
+  const [encryptRecipientId, setEncryptRecipientId] = useState("");
   const [encryptOutput, setEncryptOutput] = useState("");
   const [isEncrypting, setIsEncrypting] = useState(false);
   const [hasCopiedEncrypt, setHasCopiedEncrypt] = useState(false);
 
   const [decryptInput, setDecryptInput] = useState("");
   const [decryptPassphrase, setDecryptPassphrase] = useState("");
+  const [decryptRecipientId, setDecryptRecipientId] = useState("");
   const [decryptOutput, setDecryptOutput] = useState("");
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [hasCopiedDecrypt, setHasCopiedDecrypt] = useState(false);
@@ -37,7 +39,7 @@ export function EncryptDecryptTabs() {
     }
     setIsEncrypting(true);
     setEncryptOutput('');
-    const result = await encryptText(encryptInput, encryptPassphrase);
+    const result = await encryptText(encryptInput, encryptPassphrase, encryptRecipientId);
     setIsEncrypting(false);
     if (result) {
       setEncryptOutput(result);
@@ -62,7 +64,7 @@ export function EncryptDecryptTabs() {
     }
     setIsDecrypting(true);
     setDecryptOutput('');
-    const result = await decryptText(decryptInput, decryptPassphrase);
+    const result = await decryptText(decryptInput, decryptPassphrase, decryptRecipientId);
     setIsDecrypting(false);
     if (result !== null) {
       setDecryptOutput(result);
@@ -71,7 +73,7 @@ export function EncryptDecryptTabs() {
       toast({
         title: "Decryption Failed",
         description:
-          "This might be due to an incorrect passphrase or corrupted data.",
+          "This might be due to an incorrect passphrase, corrupted data, or a wrong Recipient ID.",
         variant: "destructive",
       });
     }
@@ -80,12 +82,14 @@ export function EncryptDecryptTabs() {
   const handleEncryptClear = () => {
     setEncryptInput("");
     setEncryptPassphrase("");
+    setEncryptRecipientId("");
     setEncryptOutput("");
   };
 
   const handleDecryptClear = () => {
     setDecryptInput("");
     setDecryptPassphrase("");
+    setDecryptRecipientId("");
     setDecryptOutput("");
   };
 
@@ -105,7 +109,7 @@ export function EncryptDecryptTabs() {
   const MAX_CHARS = 5000;
 
   return (
-    <Card className="w-full shadow-2xl bg-card/80 backdrop-blur-sm animate-border-glow">
+    <Card className="w-full bg-card rounded-lg">
       <CardHeader>
         <CardTitle>Message Transformer</CardTitle>
         <CardDescription>
@@ -144,6 +148,15 @@ export function EncryptDecryptTabs() {
                 placeholder="Enter a strong passphrase"
                 value={encryptPassphrase}
                 onChange={(e) => setEncryptPassphrase(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="encrypt-recipient-id">Recipient ID (Optional)</Label>
+              <Input
+                id="encrypt-recipient-id"
+                placeholder="Enter a unique ID for the recipient"
+                value={encryptRecipientId}
+                onChange={(e) => setEncryptRecipientId(e.target.value)}
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -199,6 +212,15 @@ export function EncryptDecryptTabs() {
                 placeholder="Enter the passphrase used for encryption"
                 value={decryptPassphrase}
                 onChange={(e) => setDecryptPassphrase(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="decrypt-recipient-id">Your ID (if one was used)</Label>
+              <Input
+                id="decrypt-recipient-id"
+                placeholder="Enter your recipient ID to verify"
+                value={decryptRecipientId}
+                onChange={(e) => setDecryptRecipientId(e.target.value)}
               />
             </div>
              <div className="flex flex-col sm:flex-row gap-4">
