@@ -58,16 +58,33 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
     }
     setIsEncrypting(true);
     setEncryptOutput('');
-    const result = await encryptText(encryptInput, encryptPassphrase, encryptRecipientId);
-    setIsEncrypting(false);
-    if (result) {
-      setEncryptOutput(result);
-    } else {
+    
+    try {
+      const result = await encryptText(encryptInput, encryptPassphrase, encryptRecipientId);
+      setEncryptOutput(result || '');
+    } catch (error) {
+      let description = "An unknown error occurred during encryption.";
+      
+      if (error instanceof Error) {
+        switch (error.message) {
+          case 'SECURE_CONTEXT_REQUIRED':
+            description = "Encryption requires a secure connection (HTTPS). Please access this site using HTTPS.";
+            break;
+          case 'CRYPTO_API_UNAVAILABLE':
+            description = "Your browser doesn't support the required encryption features. Please try a modern browser.";
+            break;
+          default:
+            description = error.message || "An error occurred during encryption.";
+        }
+      }
+      
       toast({
         title: "Encryption Failed",
-        description: "An error occurred during encryption.",
+        description: description,
         variant: "destructive",
       });
+    } finally {
+      setIsEncrypting(false);
     }
   };
 
@@ -91,6 +108,12 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
       let description = "An unknown error occurred.";
       if (error instanceof Error) {
         switch (error.message) {
+          case 'SECURE_CONTEXT_REQUIRED':
+            description = "Decryption requires a secure connection (HTTPS). Please access this site using HTTPS.";
+            break;
+          case 'CRYPTO_API_UNAVAILABLE':
+            description = "Your browser doesn't support the required decryption features. Please try a modern browser.";
+            break;
           case 'PASSPHRASE_OR_DATA_INVALID':
             description = "Please check your passphrase and the encrypted data. They may be incorrect or corrupted.";
             break;
@@ -99,6 +122,9 @@ export function EncryptDecryptTabs({ userId }: { userId: string }) {
             break;
           case 'ID_MISSING':
              description = "This message was encrypted for a specific Recipient ID, which is missing from the input.";
+            break;
+          default:
+            description = error.message || "An unknown error occurred during decryption.";
             break;
         }
       }

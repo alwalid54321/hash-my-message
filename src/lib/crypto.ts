@@ -1,5 +1,12 @@
 "use client";
 
+// Check if we're in a secure context (required for crypto.subtle in production)
+const isSecureContext = typeof window !== 'undefined' && 
+  (window.isSecureContext || window.location.protocol === 'https:' || window.location.hostname === 'localhost');
+
+// Check if crypto.subtle is available
+const isCryptoAvailable = typeof window !== 'undefined' && window.crypto && window.crypto.subtle;
+
 // Helper function to convert ArrayBuffer to Base64
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = '';
@@ -48,6 +55,17 @@ async function getKey(passphrase: string, salt: Uint8Array): Promise<CryptoKey> 
 
 // Encrypt function
 export async function encryptText(text: string, passphrase: string, recipientId?: string): Promise<string | null> {
+  // Check for secure context and crypto availability first
+  if (!isSecureContext) {
+    console.error('Encryption failed: Not in a secure context. Please use HTTPS.');
+    throw new Error('SECURE_CONTEXT_REQUIRED');
+  }
+
+  if (!isCryptoAvailable) {
+    console.error('Encryption failed: Web Crypto API not available in this browser.');
+    throw new Error('CRYPTO_API_UNAVAILABLE');
+  }
+
   try {
     const enc = new TextEncoder();
     const salt = window.crypto.getRandomValues(new Uint8Array(16));
@@ -74,12 +92,23 @@ export async function encryptText(text: string, passphrase: string, recipientId?
     return arrayBufferToBase64(resultBuffer.buffer);
   } catch (error) {
     console.error('Encryption failed:', error);
-    return null;
+    throw new Error(error instanceof Error ? error.message : 'ENCRYPTION_FAILED');
   }
 }
 
 // Decrypt function
 export async function decryptText(encryptedData: string, passphrase: string, recipientId?: string): Promise<string> {
+  // Check for secure context and crypto availability first
+  if (!isSecureContext) {
+    console.error('Decryption failed: Not in a secure context. Please use HTTPS.');
+    throw new Error('SECURE_CONTEXT_REQUIRED');
+  }
+
+  if (!isCryptoAvailable) {
+    console.error('Decryption failed: Web Crypto API not available in this browser.');
+    throw new Error('CRYPTO_API_UNAVAILABLE');
+  }
+  
   try {
     const encryptedDataBuffer = base64ToArrayBuffer(encryptedData);
     const salt = new Uint8Array(encryptedDataBuffer.slice(0, 16));
@@ -116,8 +145,13 @@ export async function decryptText(encryptedData: string, passphrase: string, rec
 
     return decryptedPayload;
   } catch (error) {
-    if (error instanceof Error && (error.message === "ID_MISMATCH" || error.message === "ID_MISSING")) {
-      throw error; // Re-throw our specific errors.
+    if (error instanceof Error) {
+      if (error.message === "ID_MISMATCH" || error.message === "ID_MISSING") {
+        throw error; // Re-throw our specific errors.
+      }
+      // Add more descriptive error for debugging in production
+      console.error('Decryption failed:', error);
+      throw new Error(error.message || "PASSPHRASE_OR_DATA_INVALID");
     }
     // Any other error from crypto.subtle.decrypt is a general failure.
     console.error('Decryption failed:', error);
