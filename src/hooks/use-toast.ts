@@ -129,6 +129,7 @@ export const reducer = (state: State, action: Action): State => {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 const listeners: Array<(state: State) => void> = []
 
 let memoryState: State = { toasts: [] }
@@ -182,10 +183,11 @@ function useToast() {
         listeners.splice(index, 1)
       }
     }
-  }, [state])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return {
-    ...state,
+    ...memoryState,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
   }
