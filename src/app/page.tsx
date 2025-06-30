@@ -14,7 +14,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-8 md:p-12 lg:p-24 bg-background">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-center p-4 sm:p-8 md:p-12 lg:p-24 bg-background">
       <div className="w-full max-w-2xl text-center mb-12 animate-fade-in">
         <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-primary font-headline animate-neon-glow">
           Hash My Message
@@ -33,6 +33,20 @@ export default function Home() {
       >
         <EncryptDecryptTabs userId={userId} />
       </div>
+
+      <footer className="absolute bottom-4 text-center text-muted-foreground animate-fade-in" style={{ animationDelay: '0.6s', animationFillMode: 'backwards' }}>
+        <p>
+          by:{" "}
+          <a
+            href="https://github.com/alwalid54321"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-headline text-primary/90 hover:text-primary hover:underline transition-all duration-300 hover:tracking-widest"
+          >
+            alwalid54321
+          </a>
+        </p>
+      </footer>
     </main>
   );
 }
