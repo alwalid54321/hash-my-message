@@ -5,7 +5,7 @@
 
 ## 🔒 Overview
 
-Hash My Message is a modern, secure web application that allows users to encrypt and decrypt messages using private passphrases. Built with Next.js and Firebase, this application provides a user-friendly interface with strong encryption mechanisms to keep your sensitive messages safe.
+Hash My Message is a modern, secure web application that allows users to encrypt and decrypt messages using private passphrases. Built with Next.js, this application provides a user-friendly interface with strong encryption mechanisms to keep your sensitive messages safe.
 
 ## ✨ Features
 
@@ -14,22 +14,20 @@ Hash My Message is a modern, secure web application that allows users to encrypt
 - **Unique User IDs**: Anonymous user identification for session management
 - **Responsive Design**: Beautiful UI that works on all devices
 - **Modern UI**: Built with Tailwind CSS and Radix UI components
-- **Firebase Integration**: Secure backend services powered by Firebase
+
 
 ## 🚀 Tech Stack
 
 - **Frontend**: Next.js 15, React 18, TypeScript
 - **Styling**: Tailwind CSS, Radix UI
-- **Backend**: Firebase
 - **AI Integration**: GenKit AI
-- **Authentication**: Firebase Authentication
 - **Deployment**: Vercel/Netlify
 
 ## 📋 Prerequisites
 
 - Node.js (v18 or higher)
 - npm or yarn
-- Firebase account (for backend services)
+
 
 ## 🛠️ Installation
 
@@ -50,16 +48,7 @@ yarn install
 
 3. **Set up environment variables**
 
-Create a `.env.local` file in the root directory with your Firebase configuration:
-
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-```
+You can create a `.env.local` file in the root directory for any environment variables you might need.
 
 ## 🏃‍♂️ Running the Application
 
@@ -71,7 +60,7 @@ npm run dev
 yarn dev
 ```
 
-The application will be available at http://localhost:9002
+The application will be available at http://localhost:3000
 
 ### Build for production
 
@@ -108,7 +97,7 @@ yarn start
 - Client-side encryption/decryption ensures messages never travel in plaintext
 - Unique user IDs for anonymous session management
 - No storage of sensitive data on servers
-- Secure Firebase backend authentication
+
 
 ## 🤝 Contributing
 
@@ -131,7 +120,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgements
 
 - [Next.js](https://nextjs.org/)
-- [Firebase](https://firebase.google.com/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Radix UI](https://www.radix-ui.com/)
 - [GenKit AI](https://genkit.ai/)
