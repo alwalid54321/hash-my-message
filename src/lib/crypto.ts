@@ -110,7 +110,7 @@ export async function decryptText(encryptedData: string, passphrase: string, rec
     }
 
     // No ID provided for decryption. Check if message was likely encrypted with one.
-    if (/^user-[a-zA-Z0-9-]+\:\:/.test(decryptedPayload)) {
+    if (/^user-[a-zA-Z0-9-]+::/.test(decryptedPayload)) {
       throw new Error("ID_MISSING");
     }
 
