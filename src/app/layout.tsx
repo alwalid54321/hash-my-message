@@ -2,6 +2,7 @@ import type {Metadata} from 'next';
 import React from 'react';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
+import PlausibleAnalytics from "@/components/analytics/plausible-analytics";
 
 export const metadata: Metadata = {
   title: 'Hash My Message',
@@ -21,6 +22,7 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <PlausibleAnalytics />
         {children}
         <Toaster />
       </body>
