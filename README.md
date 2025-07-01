@@ -2,10 +2,13 @@
 
 ![Hash My Message](https://img.shields.io/badge/Status-Active-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15.0-000000?logo=next.js)
+![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwind-css&logoColor=white)
 
 ## 🔒 Overview
 
-Hash My Message is a modern, secure web application that allows users to encrypt and decrypt messages using private passphrases. Built with Next.js, this application provides a user-friendly interface with strong encryption mechanisms to keep your sensitive messages safe.
+Hash My Message is a modern, secure web application that enables end-to-end encrypted messaging through client-side encryption and decryption. Using the Web Crypto API with AES-GCM encryption, users can securely share sensitive information via encrypted text that only recipients with the correct passphrase can decrypt. Built with Next.js 15 and React 18, this application provides a user-friendly interface with zero server-side storage of sensitive data, ensuring complete privacy and security for your communications.
 
 ## ✨ Features
 
