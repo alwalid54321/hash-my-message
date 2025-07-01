@@ -4,7 +4,7 @@
   "private": true,
   "description": "A secure client-side encryption/decryption app for sharing sensitive messages with end-to-end encryption using Web Crypto API",
   "keywords": ["encryption", "security", "crypto", "messaging", "privacy", "web-crypto", "aes-gcm", "next.js", "react"],
-  "homepage": "https://github.com/alwalid54321/hash-my-message",
+  "homepage": "https://hashmymessage.com/",
   "bugs": {
     "url": "https://github.com/alwalid54321/hash-my-message/issues"
   },

@@ -1,5 +1,6 @@
 # Hash My Message
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20Site-ff69b4)](https://hashmymessage.com/)
 ![Hash My Message](https://img.shields.io/badge/Status-Active-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-15.0-000000?logo=next.js)
