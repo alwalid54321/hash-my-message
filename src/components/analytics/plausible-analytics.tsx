@@ -22,9 +22,12 @@ export default function PlausibleAnalytics() {
     <>
       <Script 
         data-domain="hashmymessage.com" 
-        src="https://plausible.io/js/script.js" 
+        src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js" 
         strategy="lazyOnload"
       />
+      <Script id="plausible-setup">
+        {`window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }`}
+      </Script>
     </>
   );
 }
